@@ -15,7 +15,6 @@ import { UpdateRoomComponent } from './update-room/update-room.component';
     UpdateRoomComponent,
     RoomDetailsComponent,
     RoomListComponent,
-    RoomListComponent
   ],
   imports: [
     BrowserModule,

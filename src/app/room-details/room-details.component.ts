@@ -1,43 +1,35 @@
-import { Observable } from "rxjs";
-import { RoomService } from "../room.service";
-import { Room } from "../room";
-import { Component, OnInit } from "@angular/core";
-import { Router } from '@angular/router';
+import { Room } from '../room';
+import { Component, OnInit, Input } from '@angular/core';
+import { RoomService } from '../room.service';
+import { RoomListComponent } from '../room-list/room-list.component';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: "app-room-list",
-  templateUrl: "./room-list.component.html",
-  styleUrls: ["./room-list.component.css"]
+  selector: 'app-room-details',
+  templateUrl: './room-details.component.html',
+  styleUrls: ['./room-details.component.css']
 })
 export class RoomDetailsComponent implements OnInit {
-  rooms: Observable<Room[]>;
 
-  constructor(private roomService: RoomService,
-    private router: Router) {}
+  id: number;
+  room: Room;
+
+  constructor(private route: ActivatedRoute,private router: Router,
+    private roomService: RoomService) { }
 
   ngOnInit() {
-    this.reloadData();
+    this.room = new Room();
+
+    this.id = this.route.snapshot.params['id'];
+
+    this.roomService.getRoom(this.id)
+      .subscribe(data => {
+        console.log(data)
+        this.room = data;
+      }, error => console.log(error));
   }
 
-  reloadData() {
-    this.rooms = this.roomService.getRoomsList();
-  }
-
-  deleteRoom(id: number) {
-    this.roomService.deleteRoom(id)
-      .subscribe(
-        data => {
-          console.log(data);
-          this.reloadData();
-        },
-        error => console.log(error));
-  }
-
-  roomDetails(id: number){
-    this.router.navigate(['details', id]);
-  }
-
-  updateRoom(id: number){
-    this.router.navigate(['update', id]);
+  list(){
+    this.router.navigate(['rooms']);
   }
 }
